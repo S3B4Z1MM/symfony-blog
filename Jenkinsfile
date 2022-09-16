@@ -6,7 +6,7 @@ pipeline {
       steps {
         echo 'Start building ... '
         
-        ls -la 
+        sh 'ls -la' 
       }
     }
     
