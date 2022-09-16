@@ -5,6 +5,8 @@ pipeline {
     stage("build") {
       steps {
         echo 'Start building ... '
+        
+        ls -la 
       }
     }
     
