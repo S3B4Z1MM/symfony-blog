@@ -24,7 +24,7 @@ services:
       - stage
       - dev
     volumes:
-      - "${DOCKER_WEB_VOLUME:-./app/public:/var/www/html/public}"
+      - "${DOCKER_WEB_VOLUME:-./symfony/public:/var/www/html/public}"
     depends_on:
       - php
 
@@ -37,7 +37,7 @@ services:
       - stage
       - dev
     volumes:
-      - ./app:/var/www/html
+      - ./symfony:/var/www/html
     depends_on:
       - mariadb
 
