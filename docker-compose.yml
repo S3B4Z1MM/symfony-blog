@@ -19,9 +19,12 @@ services:
       retries: 3
     ports:
       - "${DOCKER_WEB_PORT_FORWARD:-127.0.0.1:8000}:80"
-    profiles: [ "web" ]
+    profiles:
+      - prod
+      - stage
+      - dev
     volumes:
-      - "${DOCKER_WEB_VOLUME:-./app/public:/var/www/html/public}"
+      - "${DOCKER_WEB_VOLUME:-./symfony/public:/var/www/html/public}"
     depends_on:
       - php
 
@@ -29,9 +32,12 @@ services:
     <<: *docker-default-settings
     build:
       context: ./docker/php
-    profiles: [ "php" ]
+    profiles:
+      - prod
+      - stage
+      - dev
     volumes:
-      - ./app:/var/www/html
+      - ./symfony:/var/www/html
     depends_on:
       - mariadb
 
@@ -40,7 +46,10 @@ services:
     image: mariadb
     ports:
       - "${DOCKER_MARIADB_PORT_FORWARD:-127.0.0.1:3307}:3306"
-    profiles: [ "mariadb" ]
+    profiles:
+      - prod
+      - stage
+      - dev
     environment:
       - MARIADB_ROOT_USER=${MARIADB_ROOT_USER}
       - MARIADB_ROOT_PASSWORD=${MARIADB_ROOT_PASSWORD}
@@ -56,7 +65,9 @@ services:
     image: adminer:4-standalone
     ports:
       - "${DOCKER_ADMINER_PORT_FORWARD}:8080"
-    profiles: [ "adminer" ]
+    profiles:
+      - stage
+      - dev
 
 volumes:
   mariadb_data:
