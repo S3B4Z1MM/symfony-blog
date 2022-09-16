@@ -1,0 +1,66 @@
+version: "3.8"
+
+x-docker: &docker-default-settings
+  restart: "${DOCKER_RESTART_POLICY:-unless-stopped}"
+  stop_grace_period: "3s"
+  networks:
+    - internal
+
+services:
+  web:
+    <<: *docker-default-settings
+    build:
+      context: ./docker/nginx
+    healthcheck:
+      test: "${DOCKER_WEB_HEALTHCHECK_TEST:-curl localhost:80/up}"
+      interval: "60s"
+      timeout: "3s"
+      start_period: "5s"
+      retries: 3
+    ports:
+      - "${DOCKER_WEB_PORT_FORWARD:-127.0.0.1:8000}:80"
+    profiles: [ "web" ]
+    volumes:
+      - "${DOCKER_WEB_VOLUME:-./app/public:/var/www/html/public}"
+    depends_on:
+      - php
+
+  php:
+    <<: *docker-default-settings
+    build:
+      context: ./docker/php
+    profiles: [ "php" ]
+    volumes:
+      - ./app:/var/www/html
+    depends_on:
+      - mariadb
+
+  mariadb:
+    <<: *docker-default-settings
+    image: mariadb
+    ports:
+      - "${DOCKER_MARIADB_PORT_FORWARD:-127.0.0.1:3307}:3306"
+    profiles: [ "mariadb" ]
+    environment:
+      - MARIADB_ROOT_USER=${MARIADB_ROOT_USER}
+      - MARIADB_ROOT_PASSWORD=${MARIADB_ROOT_PASSWORD}
+      - MARIADB_ALLOW_EMPTY_ROOT_PASSWORD=${MARIADB_ALLOW_EMPTY_ROOT_PASSWORD}
+      - MARIADB_USER=${MARIADB_USER}
+      - MARIADB_PASSWORD=${MARIADB_PASSWORD}
+      - MARIADB_DATABASE=${MARIADB_DATABASE}
+    volumes:
+      - mariadb_data:/var/lib/mysql
+
+  adminer:
+    <<: *docker-default-settings
+    image: adminer:4-standalone
+    ports:
+      - "${DOCKER_ADMINER_PORT_FORWARD}:8080"
+    profiles: [ "adminer" ]
+
+volumes:
+  mariadb_data:
+
+networks:
+  internal:
+    name: ${COMPOSE_PROJECT_NAME}-net
