@@ -1,9 +1,10 @@
 pipeline {
   agent any
   stages {
-    stage('Build PHP') {
+    stage('build') {
       steps {
-        sh 'cd symfony && composer install'
+        sh 'cd symfony'
+
       }
     }
 
