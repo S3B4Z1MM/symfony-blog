@@ -4,8 +4,12 @@ pipeline {
     stage('build') {
       steps {
         sh 'cd symfony'
+
       }
     }
 
+  }
+  environment {
+    test = 'test'
   }
 }
