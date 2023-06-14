@@ -1,5 +1,10 @@
 pipeline {
-  agent any
+  agent {
+    dockerfile {
+      filename 'docker-compose.yml'
+    }
+
+  }
   stages {
     stage('build') {
       steps {
@@ -11,8 +16,5 @@ pipeline {
       }
     }
 
-  }
-  environment {
-    test = 'test'
   }
 }
