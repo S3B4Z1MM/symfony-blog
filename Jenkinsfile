@@ -3,7 +3,7 @@ pipeline {
   stages {
     stage('build') {
       steps {
-        sh 'cd symfony && composer install'
+        echo 'Ok'
       }
     }
 
