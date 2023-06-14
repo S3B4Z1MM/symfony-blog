@@ -8,11 +8,7 @@ pipeline {
   stages {
     stage('build') {
       steps {
-        echo 'Ok'
-        dockerNode(image: 'hello-world') {
-          sh 'whoami'
-        }
-
+        sh 'docker compose '
       }
     }
 
