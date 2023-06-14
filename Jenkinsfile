@@ -1,14 +1,14 @@
 pipeline {
   agent {
-    dockerfile {
-      filename 'docker-compose.yml'
+    docker {
+      image 'hello-world'
     }
 
   }
   stages {
     stage('build') {
       steps {
-        sh 'docker compose '
+        sh 'ls -la'
       }
     }
 
